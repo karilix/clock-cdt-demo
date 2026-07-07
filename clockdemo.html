@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chicago Clock</title>
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: #0f172a;
+      font-family: "Segoe UI", Arial, sans-serif;
+      color: #f8fafc;
+    }
+
+    .card {
+      width: min(90vw, 760px);
+      padding: 36px 40px;
+      border-radius: 24px;
+      background: #0f172a;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      text-align: center;
+    }
+
+    .label {
+      font-size: 32px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .time {
+      font-size: 72px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="label" id="label">Chicago • CDT</div>
+    <div class="time" id="time">--:--:--</div>
+  </div>
+
+  <script>
+    const label = document.getElementById("label");
+    const time = document.getElementById("time");
+
+    function updateClock() {
+      const now = new Date();
+
+      const timeFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      });
+
+      const zoneFormatter = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/Chicago",
+        timeZoneName: "short"
+      });
+
+      const parts = zoneFormatter.formatToParts(now);
+      let tzName = "CDT";
+      for (const part of parts) {
+        if (part.type === "timeZoneName") {
+          tzName = part.value;
+          break;
+        }
+      }
+
+      time.textContent = timeFormatter.format(now);
+      label.textContent = "Chicago • " + tzName;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
